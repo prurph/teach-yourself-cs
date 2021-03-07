@@ -17,4 +17,5 @@ Useful shortcuts (`:h paredit-keys`)
   - Prefix with `<leader>` to use while in insert
 - `(` and `)` find opening/closing of current list (repeat to move up/down levels)
 - `[[` and `]]` move between top-level deffuns
-
+- `<leader>W` wrap current (selection, motion, etc) in parens
+  - This is a shrotcut for `<leader>w(`, and curlies, braces can also be used
