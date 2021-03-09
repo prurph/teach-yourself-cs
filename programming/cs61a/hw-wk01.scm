@@ -38,3 +38,39 @@
       (se (switch-later-word (first sent))
           (switch-rest (bf sent)))))
 
+; 4.
+; Recursive helper
+(define (ordered? xs)
+  (define (ordered-rec? x xs)
+    (if (empty? xs)
+        #t
+        (and (<= x (first xs))
+             (ordered-rec? (first xs) (bf xs)))))
+  (if (empty? xs)
+      #t
+      (ordered-rec? (first xs) (bf xs))))
+
+; Recursive helper without if
+(define (ordered? xs)
+  (define (ordered-rec? x xs)
+    (or (empty? xs)
+        (and (<= x (first xs))
+             (ordered-rec? (first xs) (bf xs)))))
+  (or (empty? xs)
+      (ordered-rec? (first xs) (bf xs))))
+
+; Based on provided solution, but accounting for empty list. I find this the
+; easiest to parse, particularly checking the disordered case and returning
+; false instead of "else (x[0] <= x[1] && (ordered? x[1:]))", which is harder
+; to read when translated to Scheme.
+(define (ordered? xs)
+  (cond ((empty? xs) #t)
+        ((empty? (bf xs)) #t)
+        ((> (first xs) (first (bf xs))) #f)
+        (else (ordered? (bf xs)))))
+
+; Or, if we assume xs is non-empty
+(define (ordered? xs)
+  (or (empty? (bf xs))
+      (and (<= (first xs) (first (bf xs)))
+           (ordered? (bf xs)))))
