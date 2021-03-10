@@ -93,3 +93,35 @@
 (define (ends-e sent)
   (filter sent word-ends-e?))
 
+;; 6.
+;; If `and` and `or` are special forms, they will not evaluate all argument
+;; expressions (they can short-circuit). If they are ordinary functions, they
+;; will, since Scheme uses applicative-form evaluation.
+;;
+;; To test this, create an invalid argument expression in a position that would
+;; not be evaluated in the special form case. If the invocation does not cause
+;; an error, then it is a special form. Note that if it _does_ cause an error,
+;; you cannot conclude it is an ordinary procedure, because it could be special
+;; and evaluating its arguments in a different order. (I didn't think of this
+;; but the course solutions pointed it out.)
+(define (test-and-special-form)
+  (and #f (an-undefined-identifier)))
+
+(define (test-or-special-form)
+  (or #t (an-undefined-identifier)))
+
+;; Special forms of `and` and `or` can be advantageous because they may reduce
+;; computational time and effort by short-circuiting:
+;;   (or (something-false) (expensive-comp)) ; expensive-comp never evaluated
+
+;; Ordinary procedures could be advantageous in a runtime where the arguments
+;; could be evaluated concurrently or in parallel, since the interpreter could
+;; then proceed as soon as one returns in some cases:
+;;   (or (return-false-in-60s) (return-true-in-60s))
+;; in the above example special form evaluation would require 2 minutes to
+;; evaluate the procedure, whereas an ordinary function could theoretically
+;; take only one given concurrent evaluation.
+
+;; Other reasons for preferring an ordinary function noted in the solutions
+;; include that functions (procedures) can be manipulated as data, but special
+;; forms cannot in be manipulated in the same ways.
