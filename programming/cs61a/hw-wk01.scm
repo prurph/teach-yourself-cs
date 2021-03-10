@@ -74,3 +74,21 @@
   (or (empty? (bf xs))
       (and (<= (first xs) (first (bf xs)))
            (ordered? (bf xs)))))
+
+; 5.
+(define (word-ends-e? w)
+  (equal? (last w) 'e))
+
+(define (ends-e sent)
+  (cond ((empty? sent) '())
+        ((word-ends-e? (first sent)) (se (first sent) (ends-e (bf sent))))
+        (else (ends-e (bf sent)))))
+
+; As a generic list filter function with a predicate
+(define (filter l p)
+  (cond ((empty? l) '())
+        ((p (first l)) (se (first l) (filter (bf l) p)))
+        (else (filter (bf l) p))))
+
+(define (ends-e sent)
+  (filter sent word-ends-e?))
