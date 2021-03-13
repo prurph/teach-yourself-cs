@@ -1,4 +1,4 @@
-;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-z-h-12.html#%_thm_1.32
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-12.html#%_thm_1.32
 
 ;; 1.32(a)
 ;; Provide a monoid with:

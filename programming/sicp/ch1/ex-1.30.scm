@@ -1,4 +1,4 @@
-;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-z-h-12.html#%_thm_1.30
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-12.html#%_thm_1.30
 
 ;; Iterative sum solution
 (define (sum term a next b)

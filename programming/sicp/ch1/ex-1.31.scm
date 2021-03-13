@@ -1,4 +1,4 @@
-;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-z-h-12.html#%_thm_1.31
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-12.html#%_thm_1.31
 
 ;; 1.31(a)
 ;; Identical to sum from 1.29 except using the multiplication monoid instead of

@@ -1,4 +1,4 @@
-;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-z-h-12.html#%_thm_1.33
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-12.html#%_thm_1.33
 
 ;; Recursive version of filtered-accumulate
 (define (filtered-accumulate combiner null-value term a next b filter)
