@@ -58,3 +58,8 @@ Useful shortcuts (`:h paredit-keys`)
 - `[[` and `]]` move between top-level deffuns
 - `<leader>W` wrap current (selection, motion, etc) in parens
   - This is a shrotcut for `<leader>w(`, and curlies, braces can also be used
+
+#### Insert Mode
+
+- `)` moves the cursor beyond the (auto-inserted) closing paren
+  - Extremely useful to move to typing the next expression instead of going into normal mode, moving the cursor to the left, then going back into insert
