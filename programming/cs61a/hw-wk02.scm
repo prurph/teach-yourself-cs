@@ -19,3 +19,24 @@
              number))
        '(781 5 76 909 24))
 ;; '(781 5 7676 909 2424)
+
+;; Extra
+;; TIL: the "Y Combinator" is a computer science thing!
+;; It has the form:
+;;   (lambda (f) (lambda (n) (f f n))))
+;; This is super mindblowing! The Y Combinator is a function that, when
+;; invoked with a function, returns a function that takes arguments and
+;; applies them to that function, while also providing a reference to the
+;; function itself, making recursion possible.
+;;
+;; So to make a function into a "Y Cominatorable" one, you just add an
+;; additional argument to it, eg (lambda (fn x ...)) and then call the YC with
+;; it. The `(f f n)` part of the YC, then, is this function being called with
+;; its argument (`n` in this case) and that self reference, `f`.
+
+;; Factorial using the Y Combinator
+((lambda (f) (lambda (n) (f f n)))
+ (lambda (fn x)
+   (if (equal? x 0)
+       1
+       (* x (fn fn (- x 1))))))
