@@ -11,3 +11,11 @@
       '()
       (se (f (first xs)) (every f (bf xs)))))
 
+;; 3.
+;; simply-scheme in fact defines map (as every) and filter (as keep)
+(every (lambda (number)
+         (if (even? number)
+             (word number number)
+             number))
+       '(781 5 76 909 24))
+;; '(781 5 7676 909 2424)
