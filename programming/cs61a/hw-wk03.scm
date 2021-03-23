@@ -29,3 +29,40 @@
 
 (next-perf 29)
 ;; => 496
+
+;; 3.
+;; Original order of conditionals:
+(cond ((= amount 0) 1)
+      ((or (< amount 0) (= kinds-of-coins 0)) 0)
+      ...)
+
+;; Modified order of conditionals:
+(cond ((or (< amount 0) (= kinds-of-coins 0)) 0)
+      ((= amount 0) 1)
+      ...)
+
+;; These will differ in result only when both clauses are true, meaning the
+;; order of early return will matter. Thus:
+(and ((= amount 0))
+     ((or (< amount 0) (= kinds-of-coins 0))))
+;; Simplifying--amount must be zero for the first clause, therefore cannot be
+;; < 0 in the second:
+(and ((= amount 0))
+     ((= kinds-of-coins 0)))
+
+;; Examining the recursive call in the else clause to determine how this could
+;; occur:
+(else (+ (cc amount (- kinds-of-coins 1))
+         (cc (- amount (...) kinds-of-coins))))
+;; 1. For the first part: kinds-of-coins - 1 = 0 and amount _was_ zero. This is
+;;    impossible because we would have short-circuited before on the amount = 0
+;;    condition.
+;; 2. For the second: amount - (...) = 0 and kinds-of-coins _was_ zero. Again,
+;;    this is impossible because i twould short-circuit on the other condition.
+;;
+;; Thus, the only case in which the order can matter is the direct call:
+;;   (cc 0 0)
+;; This is tantamount to asking: how many ways are there to make zero cents
+;; with no coins? There is one way: no coins at all, and this is why the order
+;; of the conditional in the book starts with (= amount 0) 1 to return 1 any
+;; time we reach the exact amount.
