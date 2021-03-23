@@ -66,3 +66,21 @@
 ;; with no coins? There is one way: no coins at all, and this is why the order
 ;; of the conditional in the book starts with (= amount 0) 1 to return 1 any
 ;; time we reach the exact amount.
+
+;; 4.
+;; Algebraic formula relating b, n, counter, and product in:
+(define (expt b n)
+  (expt-iter b n 1))
+(define (expt-iter b counter product)
+  (if (= counter 0)
+      product
+      (expt-iter b (- counter 1) (* b product))))
+;; counter product
+;; n       1
+;; n - 1   b
+;; n - 2   b^2
+;; n - 3   b^3
+;; 0       b^n
+;;
+;; product = b^(n - counter)
+;; product * b^counter = b^n
