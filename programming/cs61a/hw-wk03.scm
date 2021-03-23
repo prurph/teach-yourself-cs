@@ -84,3 +84,30 @@
 ;;
 ;; product = b^(n - counter)
 ;; product * b^counter = b^n
+
+;; Extra 1.
+(define (number-of-partitions i)
+  ;; Pull out a "chunk" of the number. If the chunk equals the number, there
+  ;; is one partition. Otherwise, it's the sum of the number of partitions
+  ;; with that chunk removed and the number with a smaller chunk size, down
+  ;; to zero.
+  (define (rec i chunk)
+    (cond ((zero? i) 1)
+          ((or (< i 0) (zero? chunk)) 0)
+          (else (+ (rec (- i chunk) chunk)
+                   (rec i (- chunk 1))))))
+  (rec i i))
+
+;; Extra 2.
+;; This is identical to the count-change procedure where the denominations of
+;; the coins are all positive integers up to the argument integer.
+
+;; Extra 3.
+;; Would not have come up with this myself! Continuation passing.
+(define (number-of-partitions i)
+  (define (rec i chunk next)
+    (cond ((zero? i) (next 1))
+          ((or (< i 0) (zero? chunk)) (next 0))
+          (else (rec (-i chunk) chunk (lambda (x)
+                                        (rec i (- chunk 1) lambda (y) (+ x y)))))))
+  (rec i i (lambda (x) x)))
