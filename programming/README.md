@@ -22,6 +22,12 @@ in [Configuring Vim for SICP](https://crash.net.nz/posts/2014/08/configuring-vim
 
 ### REPL
 
+Install xrepl (and it's infinite dependencies)
+
+```shell
+$ raco pkg install xrepl
+```
+
 Run the Racket REPL
 
 ```shell
@@ -42,7 +48,6 @@ $ racket -i -l xrepl -p dyoo/simply-scheme -p neil/sicp
   - dyoo/simply-scheme: includes builtins used in CS61A
   - neil/sicp: includes inc, dec, nil, etc assumed by the book
 
-
 ### Paredit
 
 [paredit.vim](https://github.com/vim-scripts/paredit.vim) is a plugin to manage
@@ -56,7 +61,7 @@ Useful shortcuts (`:h paredit-keys`)
   - Prefix with `<leader>` to use while in insert
 - `(` and `)` find opening/closing of current list (repeat to move up/down levels)
 - `[[` and `]]` move between top-level deffuns
-- `<leader>W` wrap current (selection, motion, etc) in parens
+- `<leader>W` wrap current symbol or selection in parens
   - This is a shrotcut for `<leader>w(`, and curlies, braces can also be used
 
 #### Insert Mode
