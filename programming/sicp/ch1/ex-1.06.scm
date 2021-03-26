@@ -1,4 +1,4 @@
-; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.6
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.6
 ; Newton's Method: successive approximations for determining sqrt
 (define (average x y)
   (/ (+ x y) 2))

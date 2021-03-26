@@ -1,4 +1,4 @@
-; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.4
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.4
 (define (a-plus-abs-b a b)
   ((if (> b 0) + -) a b))
 

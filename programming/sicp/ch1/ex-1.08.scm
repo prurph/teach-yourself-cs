@@ -1,4 +1,4 @@
-; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.8
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.8
 ; Newton's Method for Cube Roots: improve approximation y as (x/y**2 + 2y) / 3
 (define (square x)
   (* x x))

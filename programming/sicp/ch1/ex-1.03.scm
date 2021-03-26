@@ -1,4 +1,4 @@
-; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.3
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-10.html#%_thm_1.3
 ; Define a procedure that takes three numbers as arguments and returns the sum
 ; of the squares of the two larger numbers.
 (define (sum-square-largest-two x y z)
