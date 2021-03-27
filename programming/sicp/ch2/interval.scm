@@ -7,9 +7,9 @@
 
 ;; upper-bound and lower-bound are implemented as part of ex-2.07
 (define (upper-bound i)
-  (car i))
-(define (lower-bound i)
   (cdr i))
+(define (lower-bound i)
+  (car i))
 
 (define (add-interval x y)
   (make-interval (+ (lower-bound x) (lower-bound y))
