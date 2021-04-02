@@ -36,3 +36,27 @@
         ((pair? l) (cons (substitute2 (car l) olds news)
                          (substitute2 (cdr l) olds news)))
         (else (substitute-element l olds news))))
+
+;; Extra
+;; Note that (caddr x) means (car (cdr (cdr x))) so the application is a
+;; composition starting from the right, not `andThen` semantics.
+(define (cxr-function word)
+  (lambda (x)
+    (let ((char (first word))
+          (rest (bf word)))
+      (cond ((equal? char 'c) ((cxr-function rest) x))
+            ((equal? char 'a) (car ((cxr-function rest) x)))
+            ((equal? char 'd) (cdr ((cxr-function rest) x)))
+            ((equal? char 'r) x)
+            (else (error (format "Character ~s is not one of c,a,d,r" char)))))))
+
+;; Or a slick version using compose from the solutions and just assumes the
+;; input is c[ad]+r, therefore stripping the first and last characters.
+(define (cxr-function2 word)
+  (define (f x)
+    (if (empty? x)
+        (lambda (x) x)
+        (compose (if (equal? (first x) 'a) car cdr)
+                 (f (bf x)))))
+  (f (bf (bl word))))
+
