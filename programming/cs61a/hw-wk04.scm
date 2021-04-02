@@ -25,3 +25,14 @@
         ((pair? l) (cons (substitute (car l) old new)
                          (substitute (cdr l) old new)))
         (else l)))
+
+;; 3.
+(define (substitute2 l olds news)
+  (define (substitute-element l olds news)
+    (cond ((null? olds) l)
+          ((equal? l (car olds)) (car news))
+          ((substitute-element l (cdr olds) (cdr news)))))
+  (cond ((null? l) '())
+        ((pair? l) (cons (substitute2 (car l) olds news)
+                         (substitute2 (cdr l) olds news)))
+        (else (substitute-element l olds news))))
