@@ -52,3 +52,37 @@ Convert to iterative tail-rec with _continuation passing_; basically add a param
   ;; to the second result.
   (rec (- a 1) b (lambda (x) (rec a (- b 1) (lambda (y) (+ x y))))))
 ```
+
+## CS61a Week 4
+
+### Tail-recursion and foldLeft/foldRight
+
+Just some thoughts that are probably at least partially wrong.
+
+I was trying to implement stuff like `filter` using a tail-recursive approach,
+however a naive implementation ends up reversing the list, because we operate
+on the car of the input list, but then must prepend to the accumulator.
+
+```scheme
+(define (filter f l)
+  (define (iter l acc)
+    (cond ((null? l) acc)
+          ((f (car l)) (iter (cdr l) (cons (car l) acc)))
+          (else (iter (cdr l) acc))))
+  (iter l '()))
+```
+
+The other option, of course, is to append to the accumulator, but that then is
+effectively not tail-recursive.
+
+This is basically a `foldRight`, which cannot be made tail-recursive for mutable
+data-structures (so Scala can do this for `ArrayLike`). Remember `foldRight`
+"starts" from the right, so recursive calls go down until the tail element, then
+come back up to the head of the list.
+
+TL;DR naive `foldLeft` can be made tail recursive, but `foldRight` cannot.
+Haskell has laziness that I think can avoid stack allocations, but isn't technically tail-recursion.
+
+Summary from [Stack Overflow](https://stackoverflow.com/questions/4085118/why-foldright-and-reduceright-are-not-tail-recursive):
+
+> As others have noted, a random-access structure such as `ArrayLike` allows the `foldRight` to be rearranged into a `foldLeft` operation, and so becomes eligible for TCE.
