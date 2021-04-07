@@ -31,15 +31,17 @@ $ raco pkg install xrepl
 Run the Racket REPL
 
 ```shell
-$ racket -i -l xrepl -p dyoo/simply-scheme -p neil/sicp
-
-; See if nil (from sicp) is available
-> nil
-'()
+$ racket -i -l xrepl -p dyoo/simply-scheme
 
 ; See if se ("sentence" from simply-scheme) is available
 > (se 1 2 3)
 '(1 2 3)
+
+$ racket -i -l xrepl -p neil/sicp
+
+; See if nil (from sicp) is available
+> nil
+'()
 ```
 
 - `-i` interactively
@@ -47,6 +49,26 @@ $ racket -i -l xrepl -p dyoo/simply-scheme -p neil/sicp
 - `-p` load useful packages from Racket PLaneT repo
   - dyoo/simply-scheme: includes builtins used in CS61A
   - neil/sicp: includes inc, dec, nil, etc assumed by the book
+
+#### Warning About Packages
+
+I initially required both the simply-scheme and sicp packages, however ran into
+issues because sicp uses an `mcons` for pairs (and takes over the `cons`
+procedure when you require it last), whereas the former has `cons`. I have not
+dug into this issue too much, rather have settled on just using one package in
+the REPL, typically simply-scheme.
+
+```scheme
+> (reduce + (list 1 2 3))
+; cdr: contract violation
+;   expected: pair?
+;   given: (mcons 1 (mcons 2 (mcons 3 '())))
+; [,bt for context]
+```
+
+This is confusing because `(pair? (mcons 1 '())` etc. works. I haven't dug into
+it, but easiest just to use the simply-scheme package, especially because `cons`
+implements much easier 
 
 ### Paredit
 
