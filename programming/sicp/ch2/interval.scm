@@ -1,3 +1,4 @@
+#lang scheme
 ;; interval.scm
 ;; Abstractions for working with intervals that represent the range of possible
 ;; values of an inexact quantity.

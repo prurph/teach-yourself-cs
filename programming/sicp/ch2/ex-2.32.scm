@@ -1,3 +1,4 @@
+#lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.32
 
 ;; Subsets are formed by taking the car of a list and adding it to every subset

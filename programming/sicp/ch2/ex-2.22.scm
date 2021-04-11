@@ -1,3 +1,4 @@
+#lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.22
 
 ;; This iterative definition reverses the list because the list is iterated

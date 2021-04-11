@@ -1,3 +1,4 @@
+#lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.26
 
 (define x (list 1 2 3))

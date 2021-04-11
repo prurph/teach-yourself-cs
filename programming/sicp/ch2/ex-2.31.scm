@@ -1,3 +1,4 @@
+#lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.31
 
 ;; If the tree is a leaf, invoke the function on it, otherwise map over it,

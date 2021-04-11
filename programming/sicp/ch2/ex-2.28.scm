@@ -1,3 +1,4 @@
+#lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.28
 
 ;; Return all leaves in left-to-right (simply DFS, returning leaves). A leaf

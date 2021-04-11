@@ -1,3 +1,4 @@
+#lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-14.html#%_thm_2.5
 
 ;; Represent pairs of non-neg integers a and b as the integer 2^a * 3^b

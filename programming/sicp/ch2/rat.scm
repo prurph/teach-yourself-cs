@@ -1,3 +1,4 @@
+#lang scheme
 ;; rat.scm
 ;; Abstractions for working with rational numbers
 

@@ -1,3 +1,4 @@
+#lang scheme
 ;; [Questions](https://people.eecs.berkeley.edu/~bh/61a-pages/Volume1/hw.pdf)
 ;; [Solutions](https://people.eecs.berkeley.edu/~bh/61a-pages/Solutions/week3)
 (require (planet "dyoo/simply-scheme"))
