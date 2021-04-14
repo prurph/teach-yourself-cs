@@ -1,12 +1,7 @@
 #lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.33
 
-;; Based on the definition of accumulate (effectively a right fold)
-(define (accumulate op initial sequence)
-  (if (null? sequence)
-      initial
-      (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
+(load "accumulate.scm")
 
 (define (map p sequence)
   (accumulate (lambda (x y) (cons (p x) y)) '() sequence))
