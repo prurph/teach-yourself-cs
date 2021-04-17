@@ -19,3 +19,7 @@
 
 (accumulate-n + 0 (list '(1 2 3) '(4 5 6) '(7 8 9) '(10 11 12)))
 '(22 26 30)
+
+;; Note how trivial it is to implement zip using accumulate-n!
+(define (zip seqs)
+  (accumulate-n cons '() seqs))
