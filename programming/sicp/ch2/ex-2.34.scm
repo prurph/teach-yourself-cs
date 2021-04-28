@@ -1,7 +1,7 @@
 #lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.34
 
-(load "accumulate.scm")
+(require "accumulate.scm")
 
 (define (horner-eval x coefficient-sequence)
   (accumulate (lambda (this-coeff higher-terms) (+ this-coeff (* higher-terms x)))

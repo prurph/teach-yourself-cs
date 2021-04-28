@@ -1,7 +1,7 @@
 #lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.36
 
-(load "accumulate.scm")
+(require "accumulate.scm")
 
 ;; Given a list of lists all of identical length, accumulate the matching
 ;; indexes of each sublist, and return a list of these accumulations.

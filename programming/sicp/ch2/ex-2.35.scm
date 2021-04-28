@@ -1,7 +1,7 @@
 #lang scheme
 ;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_thm_2.35
 
-(load "accumulate.scm")
+(require "accumulate.scm")
 
 ;; Original count-leaves:
 (define (count-leaves t)
