@@ -20,7 +20,7 @@
 
 ;; accumulate-n takes a list of lists, and accumulates matching indexes across
 ;; each list, returning a list of the results; wow this allows an elegant
-;; implementation of transpose.
+;; implementation of transpose. Note this is just zip! (See ex-2.36)
 (define (transpose m)
   (accumulate-n cons '() m))
 

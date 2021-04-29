@@ -21,5 +21,6 @@
 '(22 26 30)
 
 ;; Note how trivial it is to implement zip using accumulate-n!
+;; Also note this is equivalent to transposing a matrix! (See ex-2.37)
 (define (zip seqs)
   (accumulate-n cons '() seqs))
