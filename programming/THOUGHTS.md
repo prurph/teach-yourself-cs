@@ -86,3 +86,17 @@ Haskell has laziness that I think can avoid stack allocations, but isn't technic
 Summary from [Stack Overflow](https://stackoverflow.com/questions/4085118/why-foldright-and-reduceright-are-not-tail-recursive):
 
 > As others have noted, a random-access structure such as `ArrayLike` allows the `foldRight` to be rearranged into a `foldLeft` operation, and so becomes eligible for TCE.
+
+## CS61a Week 5
+
+Semantic note: flat map can also be seen as accumulate (fold) with append and a map built in.
+
+> The combination of mapping and accumulating with `append` is so common in this sort of problem that we isolate it as a separate procedure [`flatMap`]
+
+```scheme
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+```
+
+- `map proc seq` is obviously the map step
+- `accumulate append nil` is just flattening
