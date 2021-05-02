@@ -38,3 +38,6 @@
   (map make-pair-sum
        (filter (lambda (p) (prime? (caddr (make-pair-sum p))))
                (unique-pairs n))))
+
+(provide flatmap)
+(provide enumerate-interval)
