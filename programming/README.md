@@ -8,6 +8,35 @@ This module is based on Structure and Interpretation of Computer Programs (SICP)
 
 [Exercise Solutions](http://community.schemewiki.org/?sicp-solutions)
 
+[Drew Hess' Soltuions](http://wiki.drewhess.com/wiki/Category:SICP_solutions)
+
+- I generally find these superior to the community wiki
+
+### SICP Picture Language
+
+[Chapter 2.2.4](https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4) implements a picture language
+
+[sicp-pict docs](https://docs.racket-lang.org/sicp-manual/SICP_Picture_Language.html)
+
+To run the exercises, use DrRacket. I prefer to use homebrew Racket in a REPL for everything else.
+
+- Download and install Racket from the internet (folder to drop into /Applications)
+- Inside DrRacket: File > Install Package > sicp
+- Add the following lines to the files to run:
+
+```scheme
+#lang sicp
+
+;; The sicp language has a different require syntax with `#%`
+(#% require sicp-pict)
+
+(paint einsein)
+```
+
+
+
+Chapter 2.4
+
 ## CS61A
 
 [Lectures](https://archive.org/details/ucberkeley-webcast-PL3E89002AA9B9879E)
@@ -17,7 +46,7 @@ This module is based on Structure and Interpretation of Computer Programs (SICP)
 ## Scheme
 
 This module uses Scheme. I installed a Scheme interpreter and REPL through
-[Racket](https://racket-lang.org/), and several useful Vim plugins as described
+[Racket](https://racket-lang.org/) via brew/pkg manager, and several useful Vim plugins as described
 in [Configuring Vim for SICP](https://crash.net.nz/posts/2014/08/configuring-vim-for-sicp/)
 
 ### REPL
@@ -68,7 +97,7 @@ the REPL, typically simply-scheme.
 
 This is confusing because `(pair? (mcons 1 '())` etc. works. I haven't dug into
 it, but easiest just to use the simply-scheme package, especially because `cons`
-implements much easier 
+implements a much easier to read representation in the repl.
 
 ### Paredit
 
@@ -90,3 +119,4 @@ Useful shortcuts (`:h paredit-keys`)
 
 - `)` moves the cursor beyond the (auto-inserted) closing paren
   - Extremely useful to move to typing the next expression instead of going into normal mode, moving the cursor to the left, then going back into insert
+
