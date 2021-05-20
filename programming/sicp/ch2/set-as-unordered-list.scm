@@ -15,11 +15,11 @@
 ;; Note this is a streamlined implemntation that only calls `element-of-set?`
 ;; once per element in set1 by using `cons` to construct the intersection
 ;; directly if it is. An alternate implementation could use adjoin-set instead.
-(define (intersection set1 set2)
+(define (intersection-set set1 set2)
   (cond ((or (null? set1) (null? set2)) '())
         ((element-of-set? (car set1) set2)
-         (cons (car set1) (intersection (cdr set1) set2)))
-        (else (intersection (cdr set1) set2))))
+         (cons (car set1) (intersection-set (cdr set1) set2)))
+        (else (intersection-set (cdr set1) set2))))
 
 ;; Implemnted in ex-2.59.scm
 (define (union-set set1 set2)
@@ -31,5 +31,5 @@
 
 (provide element-of-set?)
 (provide adjoin-set)
-(provide intersection)
+(provide intersection-set)
 (provide union-set)
