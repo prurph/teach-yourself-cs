@@ -22,6 +22,8 @@
                                           result-list)))))
   (copy-to-list tree '()))
 
+(provide tree->list-2)
+
 ;; Trees from Figure 2.16, representing the set {1, 3, 5, 7, 9, 11}
 (define t1
   (make-tree 7

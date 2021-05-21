@@ -22,6 +22,8 @@
 (define (list->tree elements)
   (car (partial-tree elements (length elements))))
 
+(provide list->tree)
+
 ;; 2.64(a) Explain how partial-tree works.
 ;; Divides elts into left-tree, this-entry, and right-tree. The trees are built
 ;; by recursively dividing the remaining elements in half, with the first half
