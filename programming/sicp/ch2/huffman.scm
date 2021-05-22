@@ -60,13 +60,13 @@
         ((< (weight x) (weight (car set))) (cons x set))
         (else (cons (car set) (adjoin-set x (cdr set))))))
 
-;; Convert a list of symbol-frequency pairs like ((A 4) (B 2) (C 1) (C 1)) to
+;; Convert a list of symbol-frequency pairs like ((A 4) (B 2) (C 1) (D 1)) to
 ;; an ordered set of leaves for Huffman encoding.
 (define (make-leaf-set pairs)
   (if (null? pairs)
       '()
       (adjoin-set (make-leaf (car (car pairs)) (cadr (car pairs)))
-                  (make-leaf-set (cadr pairs)))))
+                  (make-leaf-set (cdr pairs)))))
 
 (provide leaf?)
 (provide symbol-leaf)
