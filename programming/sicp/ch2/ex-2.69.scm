@@ -11,9 +11,9 @@
         (r (cdr leaf-set)))
     (if (null? r)
         l
-        (successive-merge (cons (make-code-tree (car leaf-set)
-                                                (cadr leaf-set))
-                                (cddr leaf-set))))))
+        (successive-merge (adjoin-set (make-code-tree (car leaf-set)
+                                                      (cadr leaf-set))
+                                      (cddr leaf-set))))))
 
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))

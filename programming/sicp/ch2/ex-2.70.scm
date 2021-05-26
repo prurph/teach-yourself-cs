@@ -17,13 +17,13 @@
               SHA BOOM))
 
 (encode msg ht)
-;; => '(0 0 0 0 1 0 0 0 1 0 0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 0 0 0 0 1 0 0 0 1 0 0 0
-;;      0 0 1 0 0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1
-;;      0 0 1 0 0 0 0 0 0 0)
+;; => '(1 1 1 1 1 1 1 0 0 1 1 1 1 0 1 1 1 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0 1 
+;;      1 1 1 0 1 1 1 0 0 0 0 0 0 0 0 0 1 1 0 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1
+;;      0 1 0 1 1 1 0 1 1 0 1 0)
 
 ;; How many bits are required for encoding?
 (length (encode msg ht))
-;; => 87
+;; => 84
 
 ;; What is the smallest number of bits that would be needed to encode this song
 ;; if we used a fixed-length code for the eight-symbol alphabet?
