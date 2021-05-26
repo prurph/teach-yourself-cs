@@ -36,3 +36,7 @@
                                        (make-exponentiation b (make-sum e -1)))
                          (deriv b var))))
         (else (error "unkown expression type: DERIV" exp))))
+
+(provide make-exponentiation)
+(provide base)
+(provide exponent)
