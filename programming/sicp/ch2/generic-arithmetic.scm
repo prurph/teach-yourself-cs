@@ -57,9 +57,14 @@
   (put 'make 'rational (lambda (n d) (tag (make-rat n d))))
   'done)
 ;; Entry-point for rational numbers
-(define (make-rational-number n d)
+(define (make-rational n d)
   ((get 'make 'rational) n d))
 
 ;; Package for complex numbers can be similarly defined. It is omitted here
 ;; because it depends on having the polar and rectangular packages for complex
 ;; numbers defined and installed, and I didn't feel like doing all that.
+
+(provide make-scheme-number)
+(provide install-scheme-number-package)
+(provide make-rational)
+(provide install-rational-package)
