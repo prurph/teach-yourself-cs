@@ -100,3 +100,35 @@ Semantic note: flat map can also be seen as accumulate (fold) with append and a 
 
 - `map proc seq` is obviously the map step
 - `accumulate append nil` is just flattening
+
+## 3.1.1 Local State Variables
+
+Scheme uses the exclamation point naming convention for operations that change variables or mutate datastructures, just like Ruby!
+
+This example of a "bank-account" object is pretty cool; it shows the connection between message-passing, classes, and local state through closures
+
+- Our constructor returns a procedure that responds to messages
+- These messages are equivalent to method calls on an object in an OOP language like Java
+- The response to messages is itself a procedure that gets called, so you can think of it like looking up the method on the object and then calling it
+
+```scheme
+;; The "constructor"
+(define (make-account balance)
+  (define (withdraw amount)
+    (if (>= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+  (define (deposit amount)
+    (set! alance (+ balance amount))
+    balance)
+  ;; Dispatch is the "instance" returned
+  (define (dispatch m)
+    (cond ((eq? m 'withdraw) withdraw))
+          ((eq? m 'deposit) deposit)
+          (else (error "Unknown request: MAKE-ACCOUNT" m)))
+  dispatch)
+
+(define acc (make-account 100)) ; Instantiating an account
+((acc 'withdraw) 50)            ; Look up the withdraw procecure, and apply with 50 as argument
+```
