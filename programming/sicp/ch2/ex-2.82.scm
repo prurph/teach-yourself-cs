@@ -31,12 +31,12 @@
           ;; Also every in the simply-scheme package maps to sent-every so it's
           ;; better to avoid using it.
           (if (not (member #f coercions))
-              (apply-generic op (map (lambda (coercion arg) (coercion arg))
-                                     coercions
-                                     args))
+              (apply apply-generic op (map (lambda (coercion arg) (coercion arg))
+                                           coercions
+                                           args))
               (try-coercive-apply (cdr type-tags))))))
   (let* ((type-tags (map type-tag args))
-         (proc (get op-type-tags)))
+         (proc (get op type-tags)))
     (if proc
         (apply proc (map contents args))
         (try-coercive-apply type-tags))))
