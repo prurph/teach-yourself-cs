@@ -132,3 +132,43 @@ This example of a "bank-account" object is pretty cool; it shows the connection 
 (define acc (make-account 100)) ; Instantiating an account
 ((acc 'withdraw) 50)            ; Look up the withdraw procecure, and apply with 50 as argument
 ```
+
+## CS61a Lecture 21: Assignment and State
+
+Super-cool "expansion" of procedure-definition and `let` forms into lambda expressions
+
+```scheme
+;; Procedure definition `(define (my-proc))` is shorthand for a lambda def
+(define (my-proc)
+  ...)
+;; Like saying:
+(define my-proc
+  (lambda () ...)) ; zero-arg lambda b/c my-proc doesn't take any
+
+;; `let` form is shorthand for a lambda definition and invocation with parameters
+(define (make-count)
+  (let ((result 0))
+    (lambda ()
+      (set! result (+ result 1))
+      result)))
+;; Like saying:
+(define make-count
+  ;; "long-form" procedure definition as above
+  (lambda ()
+    ;; A let form is like two sets of parentheses!
+    ;; 1. Inner parens are the actual lambda
+    ;; 2. Then invoke, in this case with argument 0!
+    ((lambda (result)
+        (lambda ()
+          (set! result (+ result 1))
+          result))
+      0))))
+```
+
+I think we are going to learn that the "environment model" of computation is basically just closing an environment (local state, variables, etc) inside lambdas/procedures. This makes me think of how environments can be shared (e.g. with pointer references to the heap, mutable state) or copied (e.g. bash subshells, copy by value, threads getting copies of stack variables, etc).
+
+In the Scheme counter example, two different "instances" point to the same lambda--returned by the constructor--but with different environments, in this case distinct local `result` variables. Quote:
+
+> Objects are just closures...a way of representing which variable you are referencing with which name in which place...an environment.
+
+You can think of `myObject.myMethod` as looking up the `myMethod` reference in the myObject environment. Wow.
