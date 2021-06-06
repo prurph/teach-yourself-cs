@@ -172,3 +172,13 @@ In the Scheme counter example, two different "instances" point to the same lambd
 > Objects are just closures...a way of representing which variable you are referencing with which name in which place...an environment.
 
 You can think of `myObject.myMethod` as looking up the `myMethod` reference in the myObject environment. Wow.
+
+## 3.2.1 The Rules for Evaluation
+
+Amazing way to think about `define` and `set!` and the relationship with environments
+
+- `define` creates a binding in the current environment frame (if it doesn't already exist) and assigns to the symbol the indicated value
+- `set!` locates the binding of the variable in the enviornment (moving up enclosing frames as required) and changes that binding to indicate the new value
+  - Note the frame being modified is the _frame with the binding_, not necessarily the current
+    - This is effectively pass by reference
+    - Pass by value would instead _create a new shadow binding in the current frame_ when the procedure is evaluated
