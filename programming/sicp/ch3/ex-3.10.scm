@@ -1,6 +1,6 @@
 #lang scheme
 
-;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-20.html#%_thm_3.10
+;; https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-21.html#%_thm_3.10
 
 ;; global environment:
 ;;   - make-withdraw
