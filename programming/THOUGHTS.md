@@ -182,3 +182,10 @@ Amazing way to think about `define` and `set!` and the relationship with environ
   - Note the frame being modified is the _frame with the binding_, not necessarily the current
     - This is effectively pass by reference
     - Pass by value would instead _create a new shadow binding in the current frame_ when the procedure is evaluated
+
+## CS61a Lecture 21: Environments
+
+Environment consists of:
+
+1. Frame: bindings of identifiers to values
+2. Pointer to _enclosing (parent) environment_
