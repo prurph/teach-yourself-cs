@@ -99,6 +99,9 @@ This is confusing because `(pair? (mcons 1 '())` etc. works. I haven't dug into
 it, but easiest just to use the simply-scheme package, especially because `cons`
 implements a much easier to read representation in the repl.
 
+Unfortunately, because it uses `cons` and not the mutable `mcons`, simply-scheme
+doesn't support `set-car!` and `set-cdr!`. Gross.
+
 ### Paredit
 
 [paredit.vim](https://github.com/vim-scripts/paredit.vim) is a plugin to manage
