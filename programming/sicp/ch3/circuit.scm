@@ -73,18 +73,4 @@
     (or-gate c1 c2 c-out)
     'ok))
 
-(#%provide
- make-wire
- get-signal
- set-signal!
- add-action!
- after-delay
- logical-not
- logical-and
- logical-or
- or-gate
- and-gate
- inverter
- half-adder
- full-adder
- inverter)
+(provide (all-defined-out))
