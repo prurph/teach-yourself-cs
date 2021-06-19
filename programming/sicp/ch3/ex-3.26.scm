@@ -60,3 +60,7 @@
 (get 1)
 (get 42)
 (table 'table)
+
+;; Quick hack to use in ex-3.27.scm
+(#%provide make-table)
+(#%provide cmp)
