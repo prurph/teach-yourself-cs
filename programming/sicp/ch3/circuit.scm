@@ -6,6 +6,7 @@
       (begin ((car procedures))
              (call-each (cdr procedures)))))
 
+;; *** Wire
 (define (make-wire)
   (let ((signal-value 0) (action-procedures '()))
     (define (set-my-signal! new-value)
@@ -28,9 +29,26 @@
 ;; proc is a procedure of no arguments that should be run whenever the signal
 ;; on the wire changes value
 (define (add-action! wire proc) ((wire 'add-action!) proc))
-(define (after-delay delay proc)
-  (sleep delay)
-  (proc))
+
+;; *** Agenda
+;; A schedule of things to do. Allows capturing of delays for wires and signals.
+(define (make-agenda) (error "Not implemented"))
+(define (empty-agenda? agenda) (error "Not implemented"))
+(define (first-agenda-item agenda) (error "Not implemented"))
+(define (remove-first-agenda-item! agenda) (error "Not implemented"))
+(define (add-to-agenda! time action agenda) (error "Not implemented"))
+(define (current-time agenda) (error "Not implemented"))
+;; The book defines these directly on a global agenda, "the-agenda"
+(define (the-agenda) (make-agenda))
+(define (after-delay delay action)
+  (add-to-agenda! (+ delay (current-time the-agenda) action the-agenda)))
+(define (propagate)
+  (if (empty-agenda? the-agenda)
+      'done
+      (let ((first-item (first-agenda-item the-agenda)))
+        (first-item)
+        (remove-first-agenda-item! the-agenda)
+        (propagate))))
 
 (define (logical-not s)
   (cond ((= s 0) 1)
