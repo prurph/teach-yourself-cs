@@ -23,11 +23,11 @@
             (else (error "Unknown operation: WIRE" m))))
     dispatch))
 
-(define (get-signal wire) (error "Not implemented"))
-(define (set-signal! wire value) (error "Not implemented"))
+(define (get-signal wire) (wire 'get-signal))
+(define (set-signal! wire value) ((wire 'set-signal!) value))
 ;; proc is a procedure of no arguments that should be run whenever the signal
 ;; on the wire changes value
-(define (add-action! wire proc) (error "Not implemented"))
+(define (add-action! wire proc) ((wire 'add-action!) proc))
 (define (after-delay delay proc)
   (sleep delay)
   (proc))
