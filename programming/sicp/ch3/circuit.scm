@@ -1,4 +1,4 @@
-#lang racket
+#lang sicp
 
 (define (call-each procedures)
   (if (null? procedures)
@@ -32,12 +32,72 @@
 
 ;; *** Agenda
 ;; A schedule of things to do. Allows capturing of delays for wires and signals.
-(define (make-agenda) (error "Not implemented"))
-(define (empty-agenda? agenda) (error "Not implemented"))
-(define (first-agenda-item agenda) (error "Not implemented"))
-(define (remove-first-agenda-item! agenda) (error "Not implemented"))
-(define (add-to-agenda! time action agenda) (error "Not implemented"))
-(define (current-time agenda) (error "Not implemented"))
+;; An agenda is made up of time segments. Time segments are pairs consisting of
+;; a number (the time) and a queue of procedures scheduled to be run during the
+;; time segment.
+(#%require "queue.scm")
+
+(define (make-time-segment time queue)
+  (cons time queue))
+(define (segment-time s)
+  (car s))
+(define (segment-queue s)
+  (cdr s))
+
+;; The agenda is a table of time segments, sorted in order of increasing time.
+;; The current time is stored at the head of the agenda, therefore a new agenda
+;; has no segments and a current time of 0.
+(define (make-agenda)
+  (list 0))
+(define (current-time agenda)
+  (car agenda))
+(define (set-current-time! agenda time)
+  (set-car! agenda time))
+(define (segments agenda)
+  (cdr agenda))
+(define (set-segments! agenda segments)
+  (set-cdr! agenda segments))
+(define (first-segment agenda)
+  (car (segments agenda)))
+(define (rest-segments agenda)
+  (cdr (segments agenda)))
+(define (empty-agenda? agenda)
+  (null? (segments agenda)))
+(define (add-to-agenda! time action agenda)
+  (define (belongs-before? segments)
+    (or (null? segments)
+        (< time (segment-time (car segments)))))
+  (define (make-new-time-segment time action)
+    (let ((q (make-queue)))
+      (insert-queue! q action)
+      (make-time-segment time q)))
+  (define (add-to-segments! segments)
+    (if (= (segment-time (car segments)) time)
+        (insert-queue! (segment-queue (car segments)) action)
+        (let ((rest (cdr segments)))
+          (if (belongs-before? rest)
+              (set-cdr! segments
+                        cons ((make-new-time-segment time action) rest))
+              (add-to-segments! rest)))))
+  (let ((segments (segments agenda)))
+    (if (belongs-before? segments)
+        (set-segments! agenda (cons (make-new-time-segment time action)
+                                    segments))
+        (add-to-segments! segments))))
+(define (remove-first-agenda-item! agenda)
+  (let ((q (segment-queue (first-segment agenda))))
+    (delete-queue! q)
+    (if (empty-queue? q)
+        (set-segments! agenda (rest-segments agenda)))))
+(define (first-agenda-item agenda)
+  (if (empty-agenda? agenda)
+      (error "Agenda is empty: FIRST-AGENDA-ITEM")
+      (let ((first-seg (first-segment agenda)))
+        ;; Whenever accessing the first item, update the current time, such that
+        ;; the current time is always that of the most recently processed action.
+        (set-current-time! agenda (segment-time first-seg))
+        (front-queue (segment-queue first-seg)))))
+
 ;; The book defines these directly on a global agenda, "the-agenda"
 (define (the-agenda) (make-agenda))
 (define (after-delay delay action)
@@ -113,4 +173,11 @@
     (or-gate c1 c2 c-out)
     'ok))
 
-(provide (all-defined-out))
+(#%provide add-action!)
+(#%provide after-delay)
+(#%provide and-gate)
+(#%provide get-signal)
+(#%provide inverter)
+(#%provide full-adder)
+(#%provide make-wire)
+(#%provide set-signal!)
