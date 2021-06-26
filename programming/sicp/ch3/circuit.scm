@@ -135,11 +135,11 @@
     (let ((new-value (logical-or (get-signal o1) (get-signal o2))))
       (after-delay or-gate-delay (lambda () (set-signal! output new-value)))))
   (add-action! o1 or-gate-procedure)
-  (add-action! o2 or-gate-procedure) 
+  (add-action! o2 or-gate-procedure)
   'ok)
 
 (define and-gate-delay 1)
-(define (and-gate a1 a2 output) 
+(define (and-gate a1 a2 output)
   (define (and-action-procedure)
     (let ((new-value (logical-and (get-signal a1) (get-signal a2))))
       (after-delay and-gate-delay (lambda () (set-signal! output new-value)))))
