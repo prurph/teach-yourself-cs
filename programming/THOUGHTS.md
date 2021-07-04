@@ -189,3 +189,11 @@ Environment consists of:
 
 1. Frame: bindings of identifiers to values
 2. Pointer to _enclosing (parent) environment_
+
+## CS61a Lecture 31: Concurrency
+
+For concurrency, need the notion of instructions which are guaranteed to occur together
+
+- Hardware typically provides atomic test and set (aka CAS) in some form
+- Operating system uses that to provide primitives like mutex that enable critical sections
+- Language uses this to provide more abstract serialization (eg `ConcurrentHashMap`)
