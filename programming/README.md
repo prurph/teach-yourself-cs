@@ -71,12 +71,15 @@ $ racket -i -l xrepl -p neil/sicp
 ; See if nil (from sicp) is available
 > nil
 '()
+
+$ racket -i -l xrepl -p dyoo/sicp-concurrency:1:2/sicp-concurrency -p neil/sicp
 ```
 
 - `-i` interactively
 - `-l` require the extended repl plackage (readline, tab completion, etc)
 - `-p` load useful packages from Racket PLaneT repo
   - dyoo/simply-scheme: includes builtins used in CS61A
+  - dyoo/sicp-concurrency:1:2/sicp-concurrency: includes `parallel-execute` used in Section 3.4
   - neil/sicp: includes inc, dec, nil, etc assumed by the book
 
 #### Warning About Packages
@@ -101,6 +104,11 @@ implements a much easier to read representation in the repl.
 
 Unfortunately, because it uses `cons` and not the mutable `mcons`, simply-scheme
 doesn't support `set-car!` and `set-cdr!`. Gross.
+
+For Section 3.4: Concurrency, I used both dyoo/sicp-concurrency and neil/sicp,
+requiring the latter second to make the list implementation `mcons` to enable
+`set-car!` and `set-cdr!`.
+
 
 ### Paredit
 
