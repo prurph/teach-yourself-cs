@@ -109,6 +109,23 @@ For Section 3.4: Concurrency, I used both dyoo/sicp-concurrency and neil/sicp,
 requiring the latter second to make the list implementation `mcons` to enable
 `set-car!` and `set-cdr!`.
 
+#### Requiring Packages Inside a File
+
+##### For Local Files/Code
+
+- In the module, use `(provide my-identifier)` to export something
+- To require it, use `(require path/to/my-file.scm)`
+
+##### For PLaneT (Racket Package Manager)
+
+As an alternative to using `-p <package-spec>` when invoking the REPL, require inside the REPL or any file
+
+- [PLaneT packages at racket-lang.org](http://planet.racket-lang.org/)
+- PLaneT is deprecated. New packages are at [pkgs.racket-lang.org](https://pkgs.racket-lang.org/package)
+
+```rkt
+(require (planet dyoo/sicp-concurrency:1:2/sicp-concurrency))
+```
 
 ### Paredit
 
