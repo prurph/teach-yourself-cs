@@ -29,6 +29,19 @@
                    (apply stream-map
                           (cons proc (map stream-cdr argstreams))))))
 
+(define (stream-filter pred stream)
+  (cond ((stream-null? stream) the-empty-stream)
+        ((pred (stream-car stream))
+         (cons-stream (stream-car stream)
+                      (stream-filter pred (stream-cdr stream))))
+         (else (stream-filter pred (stream-cdr stream)))))
+
+(define (stream-for-each proc s)
+  (if (stream-null? s)
+      'done
+      (begin (proc (stream-car s))
+             (stream-for-each proc (stream-cdr s)))))
+
 (define (list->stream l)
   (if (null? l)
       the-empty-stream
@@ -41,11 +54,19 @@
       (cons-stream a
                    (stream-enumerate-interval (+ a 1) b))))
 
+(define (display-line x) (newline) (display x))
+
+(define (display-stream s)
+  (stream-for-each display-line s))
+
 (#%provide stream-car)
 (#%provide stream-cdr)
 (#%provide the-empty-stream)
 (#%provide stream-null?)
 (#%provide stream-ref)
 (#%provide stream-map)
+(#%provide stream-filter)
+(#%provide stream-for-each)
 (#%provide list->stream)
 (#%provide stream-enumerate-interval)
+(#%provide display-stream)
