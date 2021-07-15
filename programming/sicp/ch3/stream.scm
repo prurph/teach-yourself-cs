@@ -35,6 +35,12 @@
       (cons-stream (car l)
                    (list->stream (cdr l)))))
 
+(define (stream-enumerate-interval a b)
+  (if (> a b)
+      the-empty-stream
+      (cons-stream a
+                   (stream-enumerate-interval (+ a 1) b))))
+
 (#%provide stream-car)
 (#%provide stream-cdr)
 (#%provide the-empty-stream)
@@ -42,3 +48,4 @@
 (#%provide stream-ref)
 (#%provide stream-map)
 (#%provide list->stream)
+(#%provide stream-enumerate-interval)
