@@ -197,3 +197,33 @@ For concurrency, need the notion of instructions which are guaranteed to occur t
 - Hardware typically provides atomic test and set (aka CAS) in some form
 - Operating system uses that to provide primitives like mutex that enable critical sections
 - Language uses this to provide more abstract serialization (eg `ConcurrentHashMap`)
+
+## 3.5.1 Streams Are Delayed Lists
+
+Obvious but elegant statement of streams vs lists:
+
+> As a data abstraction, streams are the same as lists. The difference is the time at which the elements are evaluated. With ordinary lists, both the `car` and the `cdr` are evaluated at construction time. With streams, the `cdr` is evaluated at selection time.
+
+This is emphasized by the following equivalence:
+
+```scheme
+;; These two are equivalent. `delay` is Scheme's promise constructor.
+(cons-stream <a> <b>)
+(cons <a> (delay <b>))
+```
+
+Also notable:
+
+- `cons-stream` must be a special form, otherwise evaluating it would require evaluating its second argument, which defeats the entire purpose of streams.
+- `delay` must also be a special form, but it can be implemented as a thunk 
+- `force` materializes promises and then just calls the above thunk
+
+This is just a simplification, in reality *promises memoize their result* to avoid forcing the same delayed object many times
+
+```scheme
+;; Delay as a special form syntactic sugar returning a thunk
+(delay <exp>) === (lambda () <exp>)
+
+;; Force is an ordinary procedure call of that lambda
+(define (force delayed-object) (delayed-object))
+```
