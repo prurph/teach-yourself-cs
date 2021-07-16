@@ -8,7 +8,6 @@
      (length xs)))
 
 (define (sqrt-improve guess x)
-  (display guess)
   (average guess (/ x guess)))
 
 ;; More efficient, original, version
@@ -43,3 +42,5 @@
 ;; wherein everytime a new element is forced from the stream we call sqrt-stream-no-local
 ;; again, getting a new stream allocated with all of the calculations we
 ;; previously did *not memoized*.
+
+(#%provide sqrt-stream)
