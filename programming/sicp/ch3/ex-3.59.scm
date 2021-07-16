@@ -37,3 +37,6 @@
 ;; The terms match with power series expressions of cos and sin:
 ;;   cos x = 1 - x^2/2 + x^4/4*3*2 - ... (cosine-series = 1, 0, -1/2, 0, ...)
 ;;   sin x = x - x^3/3*2 + x^5/5*4*3*2 - ... (sine-series = 0, 1, 0, -1/6, ...)
+
+(#%provide cosine-series)
+(#%provide sine-series)
