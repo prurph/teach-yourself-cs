@@ -48,6 +48,9 @@
 (define (mul-streams s1 s2)
   (stream-map * s1 s2))
 
+(define (scale-stream s factor)
+  (stream-map (lambda (x) (* x factor)) s))
+
 (define (list->stream l)
   (if (null? l)
       the-empty-stream
@@ -75,6 +78,7 @@
 (#%provide stream-for-each)
 (#%provide add-streams)
 (#%provide mul-streams)
+(#%provide scale-stream)
 (#%provide list->stream)
 (#%provide stream-enumerate-interval)
 (#%provide display-stream)
