@@ -42,6 +42,12 @@
       (begin (proc (stream-car s))
              (stream-for-each proc (stream-cdr s)))))
 
+(define (add-streams s1 s2)
+  (stream-map + s1 s2))
+
+(define (mul-streams s1 s2)
+  (stream-map * s1 s2))
+
 (define (list->stream l)
   (if (null? l)
       the-empty-stream
@@ -67,6 +73,8 @@
 (#%provide stream-map)
 (#%provide stream-filter)
 (#%provide stream-for-each)
+(#%provide add-streams)
+(#%provide mul-streams)
 (#%provide list->stream)
 (#%provide stream-enumerate-interval)
 (#%provide display-stream)
