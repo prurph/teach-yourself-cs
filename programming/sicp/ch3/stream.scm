@@ -81,4 +81,5 @@
 (#%provide scale-stream)
 (#%provide list->stream)
 (#%provide stream-enumerate-interval)
+(#%provide display-line)
 (#%provide display-stream)
