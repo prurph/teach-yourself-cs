@@ -51,6 +51,37 @@
 (define (scale-stream s factor)
   (stream-map (lambda (x) (* x factor)) s))
 
+;; Takes elements alternately from two streams to combine them. The alternation
+;; is required otherwise if s1 was infinite, no element of s2 would ever appear.
+(define (interleave s1 s2)
+  (if (stream-null? s1)
+      s2
+      (cons-stream (stream-car s1)
+                   (interleave s2 (stream-cdr s1)))))
+
+;; Given streams s and t, produce a stream of all possible pairs (list s_x t_y)
+;; such that x <= y. The way this breaks down is considering a table above the
+;; diagonal:
+;;
+;;        │                                                           
+;;  S0,T0 │ S0,T1  S0,T2 ...                                         
+;; ───────┼─────────────────────                                      
+;;        │ S1,T1  S1,T2 ...                                         
+;;        │                                                           
+;;        │        S2,T2 ...                                         
+;;        │                                                           
+;;
+;; This is three parts:
+;; 1. S0, T0 (list (stream-car s) (stream-car t))
+;; 2. The rest of the first row: S0,T1 S0,T2 ...:
+;;    (stream-map (lambda (x) (list (stream-car s) x)) (stream-cdr t))
+;; 3. Recursively pairs formed from (stream-cdr s) and (stream-cdr t)
+(define (pairs s t)
+  (cons-stream (list (stream-car s) (stream-car t))
+               (interleave (stream-map (lambda (x) (list (stream-car s) x))
+                                       (stream-cdr t))
+                           (pairs (stream-cdr s) (stream-cdr t)))))
+
 (define (list->stream l)
   (if (null? l)
       the-empty-stream
@@ -68,6 +99,12 @@
 (define (display-stream s)
   (stream-for-each display-line s))
 
+(define (display-stream-next s n)
+  (if (zero? n)
+      'done
+      (begin (display-line (stream-car s))
+             (display-stream-next (stream-cdr s) (- n 1)))))
+
 (#%provide stream-car)
 (#%provide stream-cdr)
 (#%provide the-empty-stream)
@@ -79,7 +116,10 @@
 (#%provide add-streams)
 (#%provide mul-streams)
 (#%provide scale-stream)
+(#%provide interleave)
+(#%provide pairs)
 (#%provide list->stream)
 (#%provide stream-enumerate-interval)
 (#%provide display-line)
 (#%provide display-stream)
+(#%provide display-stream-next)
