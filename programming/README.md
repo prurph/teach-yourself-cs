@@ -33,10 +33,6 @@ To run the exercises, use DrRacket. I prefer to use homebrew Racket in a REPL fo
 (paint einsein)
 ```
 
-
-
-Chapter 2.4
-
 ## CS61A
 
 [Lectures](https://archive.org/details/ucberkeley-webcast-PL3E89002AA9B9879E)
@@ -56,7 +52,6 @@ Install xrepl (and it's infinite dependencies)
 ```shell
 $ raco pkg install xrepl
 ```
-
 Run the Racket REPL
 
 ```shell
