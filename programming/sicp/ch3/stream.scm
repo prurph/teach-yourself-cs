@@ -94,6 +94,10 @@
       (cons-stream a
                    (stream-enumerate-interval (+ a 1) b))))
 
+(define ones (cons-stream 1 ones))
+
+(define integers (cons-stream 1 (add-streams ones integers)))
+
 (define (display-line x) (newline) (display x))
 
 (define (display-stream s)
@@ -120,6 +124,8 @@
 (#%provide pairs)
 (#%provide list->stream)
 (#%provide stream-enumerate-interval)
+(#%provide ones)
+(#%provide integers)
 (#%provide display-line)
 (#%provide display-stream)
 (#%provide display-stream-next)
