@@ -227,3 +227,29 @@ This is just a simplification, in reality *promises memoize their result* to avo
 ;; Force is an ordinary procedure call of that lambda
 (define (force delayed-object) (delayed-object))
 ```
+
+## 4.1.1 The Core of the Evaluator
+
+Evaluation process is interplay between `eval` and `apply` procedures
+
+### Eval
+
+- Two arguments
+  1. Expression
+  2. Environment
+- Classifies expression type
+  - Think of classification as a switch or match statement
+  - Expressions have means of selecting its parts, an *abstract syntax*
+  - Some types of expressions
+    - Primitive expressions
+    - Special forms
+    - Combinations (of operator part and operands)
+
+### Apply
+
+- Two arguments
+  1. Procedure
+  2. List of arguments to which procedure should be applied
+- Classifies procedures into two kinds
+  1. Calls `apply-primitive-procedure` to apply primitives
+  2. Applies compound procedures by sequentially evaluating expressions that make up its body
