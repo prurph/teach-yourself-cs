@@ -184,10 +184,17 @@
 ;; evaluate cond as nested if with begin expressions
 (define (cond? exp) (tagged-list? exp 'cond))
 (define (cond-clauses exp) (cdr exp))
-(define (cond-else-clause? clause) (eq? (cond-predicate clause) 'else))
 (define (cond-predicate clause) (car clause))
 (define (cond-actions clause) (cdr clause))
+(define (cond-else-clause? clause) (eq? (cond-predicate clause) 'else))
+(define (cond-recipient-clause? clause) (tagged-list? (cond-actions clause) '=>))
 (define (cond->if exp) (expand-clauses (cond-clauses exp)))
+(define (cond-consequent clause)
+  (let ((predicate (cond-predicate cond-clause))
+        (actions (cond-actions cond-clause)))
+    (if (cond-recipient-clause? clause)
+        ((cadr actions) predicate)
+        (sequence->exp actions))))
 (define (expand-clauses clauses)
   (if (null? clauses)
       ; value of cond when all predicates false and no else clause unspecified in Scheme--we use false
@@ -196,10 +203,10 @@
             (rest (cdr clauses)))
         (if (cond-else-clause? first)
             (if (null? rest)
-                (sequence->exp (cond-actions first))
+                (sequence->exp (cond-actions first)) ; else can't be a recipient, so shortcut
                 (error "ELSE clause isn't last: COND->IF" clauses))
             (make-if (cond-predicate first)
-                     (sequence->exp (cond-actions first))
+                     (cond-consequent first)
                      (expand-clauses rest))))))
 
 (#%provide eval)
