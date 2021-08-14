@@ -17,6 +17,7 @@
         ((and? exp) (eval-and (and-exps exp) env))
         ((or? exp) (eval-or (or-exps exp) env))
         ((let? exp) (eval (let->combination exp) env))
+        ((let*? exp) (eval (let->nested-lets exp) env))
         ((application? exp) (apply (eval (operator exp) env))
                             (list-of-values (operands exp) env))
         (else (error "Unknown expression type: EVAL" exp))))
@@ -218,6 +219,14 @@
   (cons (make-lambda (map car (let-bindings exp))
                      (let-body exp))
         (map cadr (let-bindings exp))))
+;; evaluate let* as nested lets
+(define (let*? exp) (tagged-list? exp 'let*))
+(define (let*->nested-lets exp)
+  (define (nest-bindings bindings)
+    (if (null? bindings)
+        body
+        (list 'let (list (car bindings)) (nest-bindings (cdr bindings)))))
+  (nest-bindings (let-bindings exp)))
 
 (#%provide eval)
 (#%provide apply)
@@ -276,3 +285,5 @@
 (#%provide let-bindings)
 (#%provide let-body)
 (#%provide let->combination)
+(#%provide let*?)
+(#%provide let*->nested-lets)
