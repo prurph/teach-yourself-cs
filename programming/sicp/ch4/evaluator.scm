@@ -14,6 +14,8 @@
                                        env))
         ((begin? exp) (eval-sequence (begin-actions exp) env))
         ((cond? exp) (eval (cond->if exp) env))
+        ((and? exp) (eval-and (and-exps exp) env))
+        ((or? exp) (eval-or (or-exps exp) env))
         ((application? exp) (apply (eval (operator exp) env))
                             (list-of-values (operands exp) env))
         (else (error "Unknown expression type: EVAL" exp))))
@@ -147,6 +149,25 @@
 (define (make-begin seq)
   (cons 'begin seq))
 
+;; and/or special forms, which can also be implemented as derived (see ex-4.04.scm)
+(define (and? exp) (tagged-list? exp 'and)) 
+(define (and-exps exp) (cdr exp))
+(define (eval-and exps env)
+  (if (null? exps)
+      'true
+      (if (true? (eval (car exp) env))
+          (eval-and (cdr exps) env)
+          'false)))
+
+(define (or? exp) (tagged-list? exp 'or))
+(define (or-exps exp) (cdr exp))
+(define (eval-or exps env)
+  (if (null? exps)
+      'false
+      (if (true? (eval (car exp) env))
+          'true
+          (eval-or (cdr exps) env))))
+
 ;; procedure application is any compound expression that isn't one of the above
 ;; types
 (define (application? exp) (pair? exp))
@@ -178,7 +199,7 @@
                 (sequence->exp (cond-actions first))
                 (error "ELSE clause isn't last: COND->IF" clauses))
             (make-if (cond-predicate first)
-                     (sequence-> exp (cond-actions first))
+                     (sequence->exp (cond-actions first))
                      (expand-clauses rest))))))
 
 (#%provide eval)
