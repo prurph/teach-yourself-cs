@@ -14,7 +14,7 @@
 ;; (let go '()
 ;;   (if (<while-predicate>)
 ;;       (begin (<while-body>)
-;;              (go))          
+;;              (go))
 ;;       #f))
 (define (while->named-let exp)
   (list 'let 'go '() (list (make-if (while-predicate exp)

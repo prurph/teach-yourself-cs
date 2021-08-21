@@ -152,7 +152,7 @@
   (cons 'begin seq))
 
 ;; and/or special forms, which can also be implemented as derived (see ex-4.04.scm)
-(define (and? exp) (tagged-list? exp 'and)) 
+(define (and? exp) (tagged-list? exp 'and))
 (define (and-exps exp) (cdr exp))
 (define (eval-and exps env)
   (if (null? exps)
