@@ -18,16 +18,21 @@
         ((or? exp) (eval-or (or-exps exp) env))
         ((let? exp) (eval (let->combination exp) env))
         ((let*? exp) (eval (let*->nested-lets exp) env))
-        ((application? exp) (apply (eval (operator exp) env))
-                            (list-of-values (operands exp) env))
+        ((application? exp) (my-apply (eval (operator exp) env)
+                                      (list-of-values (operands exp) env)))
         (else (error "Unknown expression type: EVAL" exp))))
 
 ;; apply takes a procedure and a set of arguments
-;; We also first capture a reference to the underlying scheme apply,
-;; so we don't  have a name collision with our apply. See p.519,
-;; footnote 17.
-(define apply-in-underlying-scheme apply)
-(define (apply procedure arguments)
+;; SICP advises capturing the underlying scheme apply before defining this
+;; apply like:
+;;
+;;   (define apply-in-underlying-scheme apply)
+;;
+;; and then using this in apply-primitive-procedure. However, this;;
+;; did not seem to work when I was requiring this module in the REPL;
+;; it would complain about apply not existing. Instead I simply renamed
+;; to `my-apply`. See p.519, footnote 17.
+(define (my-apply procedure arguments)
   (cond ((primitive-procedure? procedure)
          (apply-primitive-procedure procedure arguments))
         ((compound-procedure? procedure)
@@ -321,18 +326,6 @@
     (scan (frame-variables frame) (frame-values frame))))
 
 ;; *** Running the Evaluator as a Program
-;; Evaluator reduces expressions ultimately to application of primitive
-;; procedrues, so create mechanism to call underlying Lisp system to model
-;; application of primitive procedures. Bind primitive procedures in a global
-;; environment.
-(define (setup-environment)
-  (let ((initial-env (extend-environment (primitive-procedure-names)
-                                         (primitive-procedure-objects)
-                                         the-empty-environment)))
-    (define-variable! 'true true initial-env)
-    (define-variable! 'false false initial-env)
-    initial-env))
-(define the-global-environment (setup-environment))
 ;; Representing primitive procedures as a list with symbol 'primitive and
 ;; containing proc in underlying Lisp that implements that primitive
 (define (primitive-procedure? proc) (tagged-list? proc 'primitive))
@@ -349,7 +342,19 @@
        primitive-procedures))
 ;; Primitive procedure application
 (define (apply-primitive-procedure proc args)
-  (apply-in-underlying-scheme (primitive-implementation proc) args))
+  (apply (primitive-implementation proc) args))
+;; Evaluator reduces expressions ultimately to application of primitive
+;; procedrues, so create mechanism to call underlying Lisp system to model
+;; application of primitive procedures. Bind primitive procedures in a global
+;; environment.
+(define (setup-environment)
+  (let ((initial-env (extend-environment (primitive-procedure-names)
+                                         (primitive-procedure-objects)
+                                         the-empty-environment)))
+    (define-variable! 'true true initial-env)
+    (define-variable! 'false false initial-env)
+    initial-env))
+(define the-global-environment (setup-environment))
 ;; Driver loop that models REPL
 (define input-prompt ";;; M-Eval input:")
 (define output-prompt ";;; M-Eval value:")
@@ -379,8 +384,7 @@
   (driver-loop))
 
 (#%provide eval)
-(#%provide apply-in-underlying-scheme)
-(#%provide apply)
+(#%provide my-apply)
 (#%provide list-of-values)
 (#%provide eval-if)
 (#%provide eval-sequence)
