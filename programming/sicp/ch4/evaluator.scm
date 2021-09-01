@@ -23,6 +23,10 @@
         (else (error "Unknown expression type: EVAL" exp))))
 
 ;; apply takes a procedure and a set of arguments
+;; We also first capture a reference to the underlying scheme apply,
+;; so we don't  have a name collision with our apply. See p.519,
+;; footnote 17.
+(define apply-in-underlying-scheme apply)
 (define (apply procedure arguments)
   (cond ((primitive-procedure? procedure)
          (apply-primitive-procedure procedure arguments))
@@ -54,8 +58,8 @@
 ;; - apply to evaluate the sequence of expressions in a procedure body
 ;; - eval to evaluate the sequence of expressions in a begin expression
 (define (eval-sequence exps env)
-  (cond ((last-exp? exps) (eal (first-exp exps) env))
-        (else (eval (first-exps) env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
               (eval-sequence (rest-exps exps) env))))
 
 ;; *** Assignments and definitions
@@ -141,7 +145,7 @@
 (define (begin-actions exp) (cadr exp))
 (define (last-exp? seq) (null? (cdr seq)))
 (define (first-exp seq) (car seq))
-(define (rest-exp seq) (cdr seq))
+(define (rest-exps seq) (cdr seq))
 ;; constructor to transform sequence into a single expression, using begin if
 ;; necessary, to be used by cond->if
 (define (sequence->exp seq)
@@ -177,7 +181,7 @@
 (define (operands exp) (cdr exp))
 (define (no-operands? ops) (null? ops))
 (define (first-operand ops) (car ops))
-(define (rest ops) (cdr ops))
+(define (rest-operands ops) (cdr ops))
 
 ;; Derived expressions
 ;; Define in terms of expressions involving other special forms, rather than
@@ -192,8 +196,8 @@
 (define (cond-recipient-clause? clause) (tagged-list? (cond-actions clause) '=>))
 (define (cond->if exp) (expand-clauses (cond-clauses exp)))
 (define (cond-consequent clause)
-  (let ((predicate (cond-predicate cond-clause))
-        (actions (cond-actions cond-clause)))
+  (let ((predicate (cond-predicate clause))
+        (actions (cond-actions clause)))
     (if (cond-recipient-clause? clause)
         ((cadr actions) predicate)
         (sequence->exp actions))))
@@ -236,7 +240,7 @@
 (define (let*->nested-lets exp)
   (define (nest-bindings bindings)
     (if (null? bindings)
-        body
+        (let-body exp)
         (list 'let (list (car bindings)) (nest-bindings (cdr bindings)))))
   (nest-bindings (let-bindings exp)))
 
@@ -252,7 +256,7 @@
   (tagged-list? p 'procedure))
 (define (procedure-parameters p) (cadr p))
 (define (procedure-body p) (caddr p))
-(define (procedure-env p) (cadddr p))
+(define (procedure-environment p) (cadddr p))
 
 ;; Operations on environments Represent an environment as a list of frames. The
 ;; enclosing environment of an environment is the cdr of the list.
@@ -316,7 +320,66 @@
             (else (scan (cdr vars) (cdr vals)))))
     (scan (frame-variables frame) (frame-values frame))))
 
+;; *** Running the Evaluator as a Program
+;; Evaluator reduces expressions ultimately to application of primitive
+;; procedrues, so create mechanism to call underlying Lisp system to model
+;; application of primitive procedures. Bind primitive procedures in a global
+;; environment.
+(define (setup-environment)
+  (let ((initial-env (extend-environment (primitive-procedure-names)
+                                         (primitive-procedure-objects)
+                                         the-empty-environment)))
+    (define-variable! 'true true initial-env)
+    (define-variable! 'false false initial-env)
+    initial-env))
+(define the-global-environment (setup-environment))
+;; Representing primitive procedures as a list with symbol 'primitive and
+;; containing proc in underlying Lisp that implements that primitive
+(define (primitive-procedure? proc) (tagged-list? proc 'primitive))
+(define (primitive-implementation proc) (cadr proc))
+(define primitive-procedures
+  (list (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+        (list 'null? null?))) ; add additional primitives as needed
+(define (primitive-procedure-names)
+  (map car primitive-procedures))
+(define (primitive-procedure-objects)
+  (map (lambda (proc) (list 'primitive (cadr proc)))
+       primitive-procedures))
+;; Primitive procedure application
+(define (apply-primitive-procedure proc args)
+  (apply-in-underlying-scheme (primitive-implementation proc) args))
+;; Driver loop that models REPL
+(define input-prompt ";;; M-Eval input:")
+(define output-prompt ";;; M-Eval value:")
+(define (driver-loop)
+  (prompt-for-input input-prompt)
+  (let ((input (read)))
+    (let ((output (eval input the-global-environment)))
+      (announce-output output-prompt)
+      (user-print output)))
+  (driver-loop))
+(define (prompt-for-input string)
+  (newline) (newline) (display string) (newline))
+(define (announce-output string)
+  (newline) (display string) (newline))
+;; Avoid printting environment portion of compound procdure; may be large or
+;; contain cycles.
+(define (user-print object)
+  (if (compound-procedure? object)
+      (display (list 'compound-procedure
+                     (procedure-parameters object)
+                     (procedure-body object)
+                     '<procedure-env>))
+      (display object)))
+;; Run evaluator by initializing global env and starting driver loop:
+(define (run-evaluator)
+  ;;  that the-global-environment is already defined
+  (driver-loop))
+
 (#%provide eval)
+(#%provide apply-in-underlying-scheme)
 (#%provide apply)
 (#%provide list-of-values)
 (#%provide eval-if)
@@ -347,7 +410,7 @@
 (#%provide begin-actions)
 (#%provide last-exp?)
 (#%provide first-exp)
-(#%provide rest-exp)
+(#%provide rest-exps)
 (#%provide sequence->exp)
 (#%provide and?)
 (#%provide and-exps)
@@ -361,7 +424,7 @@
 (#%provide operands)
 (#%provide no-operands?)
 (#%provide first-operand)
-(#%provide rest)
+(#%provide rest-operands)
 (#%provide cond?)
 (#%provide cond-clauses)
 (#%provide cond-else-clause?)
@@ -385,15 +448,26 @@
 (#%provide compound-procedure?)
 (#%provide procedure-parameters)
 (#%provide procedure-body)
-(#%provide procedure-env)
+(#%provide procedure-environment)
 (#%provide enclosing-environment)
 (#%provide first-frame)
 (#%provide the-empty-environment)
-(#%%provide make-frame)
-(#%%provide frame-variables)
-(#%%provide frame-values)
-(#%%provide add-binding-to-frame!)
-(#%%provide extend-environment)
-(#%%provide lookup-variable-value)
-(#%%provide set-variable-value!)
-(#%%provide define-variable!)
+(#%provide make-frame)
+(#%provide frame-variables)
+(#%provide frame-values)
+(#%provide add-binding-to-frame!)
+(#%provide extend-environment)
+(#%provide lookup-variable-value)
+(#%provide set-variable-value!)
+(#%provide define-variable!)
+(#%provide setup-environment)
+(#%provide the-global-environment)
+(#%provide primitive-procedure?)
+(#%provide primitive-implementation)
+(#%provide primitive-procedures)
+(#%provide primitive-procedure-names)
+(#%provide primitive-procedure-objects)
+(#%provide apply-primitive-procedure)
+(#%provide driver-loop)
+(#%provide user-print)
+(#%provide run-evaluator)
