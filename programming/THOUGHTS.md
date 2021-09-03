@@ -253,3 +253,24 @@ Evaluation process is interplay between `eval` and `apply` procedures
 - Classifies procedures into two kinds
   1. Calls `apply-primitive-procedure` to apply primitives
   2. Applies compound procedures by sequentially evaluating expressions that make up its body
+
+## 4.1.6 Internal Definitions
+
+- The difference between `let*` and `letrec` is that the former is evaluated **sequentially**, the latter **simultaneously.**
+- Consequently a later `let*` binding can refer to an earlier one (unlike plain `let*`)
+- Only `letrec` allows *mutual* recursion of bindings, because everything is defined at once
+
+```scheme
+;; b can refer to earlier binding of a in let*, but not vice versa
+(define (f x)
+  (let* ((a 5)
+         (b (+ a 5)))
+    (<body of f>)))
+
+;; odd? and even? can refer to each other in letrec
+(define (g x)
+  (letrec ((even? (lambda (n) (if (= n 0) true (odd? (- n 1)))))
+           (odd? (lambda (n) (if (= n 0) false (even? (- n 1))))))
+     (<body of g>)))
+```
+
