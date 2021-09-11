@@ -274,3 +274,26 @@ Evaluation process is interplay between `eval` and `apply` procedures
      (<body of g>)))
 ```
 
+## 4.2.1 Normal Order and Applicative Order
+
+### Strict vs Non-strict
+
+Strict vs non-strict is essentially the same as applicative vs normal order, but refers to individual procedures and arguments instead of the language as a whole.
+
+- If argument evaluated before body of procedure is entered, the procedure is **strict** in that argument
+- If body of procedure entered before argument evaluated, it is **non-strict** in that argument
+
+Example of non-strict: `if` clause
+
+### Applicative vs Normal Order
+
+- Purely applicative-order language (like Scheme)
+    - All procedures strict in each argument
+- Purely normal-order language
+    - All compound procedures non-strict in each argument
+    - Primitive procedures may be strict or non-strict
+
+### Lazy vs Non-Lazy
+
+- Difference between lazy and normal-order is fuzzy
+- Generally lazy refers to mechanisms of evaluators, while normal-order refers to semantics independent of evaluation strategy
