@@ -18,13 +18,14 @@
         ((lambda? exp) (analyze-lambda exp))
         ((begin? exp) (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
+        ((let? exp) (analyze (let->combination exp)))
         ((application? exp) (analyze-application exp))
         (else (error "Unknown expression type: ANALYZE" exp))))
 
 (define (analyze-self-evaluating exp)
   (lambda (env) exp))
 (define (analyze-quoted exp)
-  (let ((qval text-of-quotation exp))
+  (let ((qval (text-of-quotation exp)))
     (lambda (env) qval)))
 ;; variable lookup must be done during execution (depends on knowing
 ;; environment)
@@ -47,9 +48,9 @@
   (let ((pproc (analyze (if-predicate exp)))
         (cproc (analyze (if-consequent exp)))
         (aproc (analyze (if-alternative exp))))
-    (lambda (env) (if (true? (pproc env)
-                             (cproc env)
-                             (aproc env))))))
+    (lambda (env) (if (true? (pproc env))
+                      (cproc env)
+                      (aproc env)))))
 ;; Analyze lambda body only once, even though it may be applied multiple times
 (define (analyze-lambda exp)
   (let ((vars (lambda-parameters exp))
