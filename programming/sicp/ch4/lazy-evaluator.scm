@@ -374,6 +374,7 @@
         (list 'null? null?)
         (list '= =)
         (list '+ +)
+        (list '* *)
         (list '/ /))) ; add additional primitives as needed
 (define (primitive-procedure-names)
   (map car primitive-procedures))
