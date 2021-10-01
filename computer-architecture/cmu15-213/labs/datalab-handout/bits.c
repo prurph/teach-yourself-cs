@@ -177,9 +177,9 @@ int isTmax(int x) {
    * tmax  + 1 = 1 0 0 0 ... 0
    * 2tmax + 1 = 1 1 1 1 ... 1
    *
-   * Thus check that (x + 1) + x is all 1's, or that ~((x + 1) + 1) is all zeros:
+   * Thus check that (x + 1) + x is all 1's, or that ~((x + 1) + x) is all zeros:
    *
-   * !(~((x + 1) + 1))
+   * !(~((x + 1) + x))
    *
    * However this is also true for -1:
    *
@@ -310,7 +310,7 @@ int conditional(int x, int y, int z) {
    *
    * Union the two branches for the final return value
    */
-  x = !!x;   // x is 0 or 1
+  x = !!x;    // x is 0 or 1
   x = ~x + 1; // 1 becomes all 1's, 0 becomes all 0's
 
   return (x & y) | (~x & z);
