@@ -22,6 +22,10 @@ Troubleshooting `fatal error: gnu/stubs-32.h: No such file or directory`
 - Install the 32-bit libc dev pacakge and gcc libs: [see Stack Overflow](https://stackoverflow.com/a/7412698)
 
 ```shell
+# Arch
 $ sudo pacman -S lib32-glibc lib32-gcc-libs
+
+# Ubuntu
+$ sudo apt-get install gcc-multilib
 ```
 

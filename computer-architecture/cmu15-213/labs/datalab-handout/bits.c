@@ -441,7 +441,24 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  int sign = (uf >> 31) & 0x1;
+  int exp = (uf >> 23) & 0xFF;
+  int frac = uf & 0x7FFFFF;
+
+  // If exp is all ones, uf is infinity (pos/neg) or NaN. In either case we
+  // can just return it.
+  if (exp == 0xFF) {
+    return uf;
+  }
+  // Denormalized: there is no exponent component to worry about, so we just
+  // double by left-shifting one. Note that it's fine if the shift puts a 1
+  // in the first exponent bit.
+  if (!exp) {
+    return (sign << 31) | (uf << 1);
+  }
+  // Normalized: double by incrementing the exponent bits by one.
+  exp += 1;
+  return (sign << 31) | (exp << 23) | frac;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -456,7 +473,39 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  int sign = (uf >> 31) & 0x1;
+  int exp = (uf >> 23) & 0xFF;
+  int frac = uf & 0x7FFFFF;
+  int E = exp - 127;
+
+  // Infinity or NaN
+  if (exp == 0xFF) {
+    return 0x80000000u;
+  }
+
+  // Negative E values round to 0
+  if (E < 0) {
+    return 0;
+  }
+  // If the exponent is ^ 31 we can't represent this float as an int
+  if (E > 31) {
+    return 0x80000000u;
+  }
+
+  // V = (-1)^s * 1.frac  * 2^E
+  //   = (-1)^s * 1[frac] * 2^-23 * 2^E  // Expand 1.frac into its full "int" representation
+  //   = (-1)^s * 1[frac] * 2^(E-23)
+  // First normalize frac to 1[frac]:
+  frac |= 0x800000;
+  // If E - 23 >= 0, we're multiplying by 2, so left shift by E - 23
+  if (E >= 23) {
+    frac <<= (E - 23);
+  // If E - 23 < 0, we're dividing by 2, so right shift by abs(E - 23) = 23 - E
+  } else {
+    frac >>= (23 - E);
+  }
+  // Negate this integer if the sign was negative
+  return sign ? (~frac + 1) : frac;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
@@ -472,5 +521,22 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  int exp = x + 127;
+  // Smallest denorm: V = (1 * 2^-23) * 2^(1 - Bias) = 2^(-23 + 1 - 127) = 2^-149
+  if (x < -149) {
+    return 0;
+  }
+  // Infinity
+  if (x > 127) {
+    return (0xFF << 23);
+  }
+  // Non-negative exponent: put exp bits in place.
+  if (exp >= 0) {
+    return exp << 23;
+  }
+  // Negative exponent: shift a 1 into the right spot
+  // For example, if x = -1, then we shift 23 - 1 = 22 placesto the right
+  // to end up with a 1 followed by 22 zeros, which matches the
+  // correct fractional bits.
+  return 1 << (23 + x);
 }
