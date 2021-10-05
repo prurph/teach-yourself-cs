@@ -54,7 +54,7 @@ Overall therefore, it seems like our input must match a string, if it doesn't, `
 
 ### Answer
  
-Border relations with Canada have never been better.
+`Border relations with Canada have never been better.`
 
 ## Phase 2
 
@@ -202,4 +202,79 @@ Dump of assembler code for function phase_3:
 
 ### Answer
 
-0 207
+`0 207`
+
+## Phase 4
+
+Again, same setup of `sscanf` to parse two numbers and set them in offsets from `%rsp`. This progresses into:
+
+```asm
+   0x000000000040103a <+46>:    mov    $0xe,%edx
+   0x000000000040103f <+51>:    mov    $0x0,%esi
+   0x0000000000401044 <+56>:    mov    0x8(%rsp),%edi
+=> 0x0000000000401048 <+60>:    call   0x400fce <func4>
+```
+
+We're setting `%edx` to 14, putting our first input number into `%edi` and calling `func4`, which does the following.
+
+- There's a lot of obfuscating math going on, but the keys are two comparisons
+    - On `func4+20/+22`: `%ecx <= %edi` to jump, otherwise loop back to the top
+    - On `func4+41/+43`: `%ecx >= %edi` to jump, otherwise loop
+- Note that `%edi` is the first input number, and it _doesn't change_
+- If we do the math for the top loop part we discover that at the point of the first comparison, `%ecx == 7`
+- Therefore `%edi`, the first input number, must be exactly 7
+
+```asm
+Dump of assembler code for function func4:
+   0x0000000000400fce <+0>:     sub    $0x8,%rsp
+=> 0x0000000000400fd2 <+4>:     mov    %edx,%eax
+   0x0000000000400fd4 <+6>:     sub    %esi,%eax
+   0x0000000000400fd6 <+8>:     mov    %eax,%ecx
+   0x0000000000400fd8 <+10>:    shr    $0x1f,%ecx
+   0x0000000000400fdb <+13>:    add    %ecx,%eax
+   0x0000000000400fdd <+15>:    sar    %eax
+   0x0000000000400fdf <+17>:    lea    (%rax,%rsi,1),%ecx
+
+   # %edi is first input number, %ecx is 7 the first time through
+   # %ecx <= %edi
+   0x0000000000400fe2 <+20>:    cmp    %edi,%ecx
+   0x0000000000400fe4 <+22>:    jle    0x400ff2 <func4+36>
+
+   0x0000000000400fe6 <+24>:    lea    -0x1(%rcx),%edx
+   0x0000000000400fe9 <+27>:    call   0x400fce <func4>
+   0x0000000000400fee <+32>:    add    %eax,%eax
+   0x0000000000400ff0 <+34>:    jmp    0x401007 <func4+57>
+   0x0000000000400ff2 <+36>:    mov    $0x0,%eax
+
+   # %edi does not change, and here we need %ecx >= %edi
+   # In concert with +20/+22 this means %edi = %ecx = 7
+   0x0000000000400ff7 <+41>:    cmp    %edi,%ecx
+   0x0000000000400ff9 <+43>:    jge    0x401007 <func4+57>
+   0x0000000000400ffb <+45>:    lea    0x1(%rcx),%esi
+   0x0000000000400ffe <+48>:    call   0x400fce <func4>
+   0x0000000000401003 <+53>:    lea    0x1(%rax,%rax,1),%eax
+   0x0000000000401007 <+57>:    add    $0x8,%rsp
+   0x000000000040100b <+61>:    ret
+ ```
+
+With these comparisons satisfied, `func4` returns and we're back in `phase_4`. The relevant lines are:
+
+```asm
+   # This just tests the output of %eax from func4: 1 means passing
+=> 0x000000000040104d <+65>:    test   %eax,%eax
+   0x000000000040104f <+67>:    jne    0x401058 <phase_4+76>
+   
+   # This is the relevant compasrison: %rsp + 0xC is our second input number;
+   # it must equal 0 to pass.
+   0x0000000000401051 <+69>:    cmpl   $0x0,0xc(%rsp)
+   0x0000000000401056 <+74>:    je     0x40105d <phase_4+81>
+   0x0000000000401058 <+76>:    call   0x40143a <explode_bomb>
+   0x000000000040105d <+81>:    add    $0x18,%rsp
+   0x0000000000401061 <+85>:    ret
+```
+
+This gives us our final answer of `7 0`
+
+### Answer
+
+`7 0`
