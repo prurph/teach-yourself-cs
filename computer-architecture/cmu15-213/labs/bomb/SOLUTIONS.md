@@ -278,3 +278,70 @@ This gives us our final answer of `7 0`
 ### Answer
 
 `7 0`
+
+## Phase 5
+
+### Hack/Experimental Solution
+
+- I noticed a call to `strings_not_equal` where `$rsi` always pointed at the string "flyers", and `$rdi` was a permutation of my string
+- There is a check for string length of 6, so I went through submitting "abcdef", "hijklm", etc., and checking what the translation was going into the `strings_not_equal` call
+- It turns out each letter is mapped to something else (doesn't seem to be a Caesar cipher though)
+- By learning the mappings I was able to submit something that translated to the desired "flyers"
+
+### Deeper Understanding
+
+The key is here from +41 to +74, and noticing that there's this random `movzbl 0x4024b0(%rdx),%edx` on +55. That literal value is an array containing the translation string.
+
+```asm
+   # %rax is 0, %rbx is our input string
+   # This is taking the first byte of %rbx + 0*1 = %rbx, putting it in
+   # %ecx (this is the first character of our input!)
+   # If you p/c $ecx at this point you'll see your character and it's
+   # ASCII code
+=> 0x000000000040108b <+41>:    movzbl (%rbx,%rax,1),%ecx
+
+   # %cl is a common loop counter register, so this is a clue; it's
+   # being stored in the stack pointer, then moved to rdx and the
+   # first bit masked (+52)
+   0x000000000040108f <+45>:    mov    %cl,(%rsp)
+   0x0000000000401092 <+48>:    mov    (%rsp),%rdx
+   0x0000000000401096 <+52>:    and    $0xf,%edx
+
+   # This is the key: %rdx is set as the first four bits (from the movzbl
+   # plus the & with 0xF) of our input character. It's now being used to
+   # index into 0x4024b0. If we look at that:
+   # (gdb) x/8s 0x4024b0
+   # 0x4024b0 <array.3449>:  "maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?"
+   # 0x4024f8:       "Curses, you've found the secret phase!"
+   # 0x40251f:       ""
+   # 0x402520:       "But finding it and solving it are quite different..."
+   # 0x402555:       ""
+   # 0x402556:       ""
+   # 0x402557:       ""
+   # 0x402558:       "Congratulations! You've defused the bomb!"
+   # We see the first entry has a bunch of letters, so the offset is
+   # basically looking up a translation, and we just need to find what
+   # translates to "flyers".
+   # Example:
+   # input string i = 105 = 1101001
+   # mask first byte = 1001 =  0x9
+   # 0x4024b0 + 9 * 1 = 10th character, or f
+   0x0000000000401099 <+55>:    movzbl 0x4024b0(%rdx),%edx
+   0x00000000004010a0 <+62>:    mov    %dl,0x10(%rsp,%rax,1)
+
+   # Increment %rax
+   0x00000000004010a4 <+66>:    add    $0x1,%rax
+
+   # If %rax isn't yet 6, keep looping back to +41. So we're running
+   # the loop for each character
+   0x00000000004010a8 <+70>:    cmp    $0x6,%rax
+   0x00000000004010ac <+74>:    jne    0x40108b <phase_5+41>
+   0x00000000004010ae <+76>:    movb   $0x0,0x16(%rsp)
+   0x00000000004010b3 <+81>:    mov    $0x40245e,%esi
+   0x00000000004010b8 <+86>:    lea    0x10(%rsp),%rdi
+   0x00000000004010bd <+91>:    call   0x401338 <strings_not_equal>
+```
+
+### Answer
+
+`ionevw`
