@@ -300,9 +300,9 @@ The key is here from +41 to +74, and noticing that there's this random `movzbl 0
    # ASCII code
 => 0x000000000040108b <+41>:    movzbl (%rbx,%rax,1),%ecx
 
-   # %cl is a common loop counter register, so this is a clue; it's
-   # being stored in the stack pointer, then moved to rdx and the
-   # first bit masked (+52)
+   # %cl is actually just the low byte of %rcx/%ecx, so these
+   # instructions are moving it to %rdx and masking its first bit (+52)
+   # to zero out the rest of %rdx
    0x000000000040108f <+45>:    mov    %cl,(%rsp)
    0x0000000000401092 <+48>:    mov    (%rsp),%rdx
    0x0000000000401096 <+52>:    and    $0xf,%edx
